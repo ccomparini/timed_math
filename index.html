@@ -1,13 +1,15 @@
 <html>
   <head>
     <style type="text/css">
-        #chooser-div {
-            float: right;
-            width: 100%;
-        }
+        input { font:inherit; }
         #field-de-mathular {
-            width: 60%;
+            font-size: 48px;
+            font-weight: bold;
             margin:0 auto;
+            width: 60%;
+        }
+        #answer {
+            width: 4em;
         }
     </style>
   </head>
@@ -15,77 +17,28 @@
     <div id="status">
         <span>correct answers: </span><span data-shows="numCorrect"></span>
         <span>incorrect answers: </span><span data-shows="numIncorrect"></span>
+        <span>time left: </span><span data-shows="timeLeft"></span>
     </div>
     <div id="field-de-mathular">
       <span>
         <span id="problem"></span> = <input id="answer" type="number" autofocus>
       </span>
+      <div>
+        <span id="hint"></span>
+      </div>
     </div>
   </body>
   <script src="../uiulars/uiulator.js"> </script>
   <script src="../mathulars/mathulars.js"></script>
+  <script src="timed_math.js"></script>
   <script>
-    let display = document.getElementById("problem");
-
-    let stats = {
-        numCorrect   : 0,
-        numIncorrect : 0,
-    };
-
-    let stui = uiulator(stats, document.getElementById("status"));
-
-    // stop after 15 minutes:
-    let time_is_up = false;
-    setTimeout( function() { time_is_up = true; }, 1000 * 60 * 15);
-
-    let correctAnswer;
-    function newOperands() {
-        let operands = mathulars.operands(2, 2, 12);
-        correctAnswer = operands[0] * operands[1];
-        display.textContent = operands.join(' x ');
-    }
-
-    let answerField = document.getElementById("answer");
-    answerField.addEventListener(
-        "keydown", event => {
-            if(event.keyCode === 13) { // return key
-                if(answerField.value == correctAnswer) {
-                    stats.numCorrect++;
-                } else {
-                    stats.numIncorrect++;
-                }
-                answerField.value = '';
-                newOperands();
-                stui.update();
-            }
-        }
-    );
-
-    // start!
-    newOperands();
-    
-/*
-    while(!time_is_up) {
-        let ops = mathulars.operands(2, 2, 12);
-        display.textContent = ops.join(' x ');
-    }
- */
-/*
-    var chooser = document.getElementById("chooser");
-    var proto   = document.getElementById("proto-choice");
-
-    for (const opt of mathulars.problemTypes()) {
-        var newch = proto.cloneNode(true);
-        newch.value = opt;
-        newch.innerText = opt;
-        chooser.append(newch);
-    }
-    proto.remove();
-
-    chooser.addEventListener('change', (event) => {
-        mathulars.fillElements("td", chooser.value);
+    let gameState = timedMath({
+        problemField: document.getElementById("problem"),
+        answerField:  document.getElementById("answer"),
+        hintField:    document.getElementById("hint"),
     });
- */
+
+    let stui = uiulator(gameState, document.getElementById("status"));
 
   </script>
 </html>
