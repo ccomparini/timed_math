@@ -47,6 +47,32 @@
             color: #DC143C;
         }
 
+        @keyframes rainbow-flow {
+            0% {
+                background-position: 0%;
+                background-color: #00ff00;
+            }
+            33% {
+                background-color: #0000ff
+            }
+            66% {
+                background-color: #ff0000;
+            }
+            100% {
+                background-position: 0%;
+                background-color: #00ff00;
+            }
+        }
+        .high-score {
+            animation: rainbow-flow 1s ease infinite;
+/*
+            background: linear-gradient(-45deg,
+                red, orange, yellow, green, cyan, blue, violet,
+                     blue, cyan, green, yellow, orange
+            );
+ */
+        }
+
         .centered {
             display:table;
             margin: 0 auto;
@@ -113,6 +139,11 @@
         onDone:     function() {
             // ideally, one would play a sound here
             recordResult("yay", "Doneular!");
+            if(gameState.numCorrect > gameState.highScore) {
+                recordResult("high-score", "HIGH SCORE! " + gameState.numCorrect);
+            } else if(gameState.numCorrect === gameState.highScore) {
+                recordResult("tied", "You tied the high score!");
+            }
         },
     };
     var gameState = timedMath(conf);
