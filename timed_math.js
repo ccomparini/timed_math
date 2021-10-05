@@ -9,18 +9,67 @@ function timedMath(conf) {
          - ideally we could save progress somewhere?
      */
 
-    let totalTime = (conf.totalTime || 15*60) * 1000;
-    let state = {
-        numCorrect   : 0,
-        numIncorrect : 0,
+    let onUpdate = conf.onUpdate || function() { };
+    let onRight  = conf.onRight  || function() { };
+    let onWrong  = conf.onWrong  || function() { };
 
-        timeLeft : totalTime,
-    };
+    let totalTime = (conf.totalTime || 15*60) * 1000;
+
+    function newState(lastState) {
+        var best = 0;
+        if(lastState) {
+            if(lastState.highScore)
+                best = lastState.highScore;
+            if(lastState.numCorrect > best)
+                best = lastState.numCorrect;
+        }
+
+        return {
+            numCorrect   : 0,
+            numIncorrect : 0,
+
+            highScore  : best,
+            timeLeft : totalTime,
+
+            lastState : lastState,
+        }
+    }
+
+    let state = newState(loadState());
     let timer;
+
+    function loadState() {
+        let state;
+        try {
+            // can this possibly be right?
+            const cookies = document.cookie;
+            // do we need to url-decode?
+            state = JSON.parse(cookies);
+        } catch (error) {
+            // no state or it was unparseable.  just make a new one.
+            state = newState({});
+        }
+        return state;
+    }
+
+    function saveState() {
+        document.cookie = JSON.stringify(state);
+    }
 
     function beDone() {
         state.timeLeft = 0;
+        conf.onDone();
         clearInterval(timer);
+        saveState();
+    }
+
+    function update() {
+        state.minutesLeft = Math.floor(state.timeLeft/(60000));
+        state.secondsLeft = Math.floor((state.timeLeft%60000)/1000);
+        if(state.secondsLeft < 10)
+            state.secondsLeft = "0" + state.secondsLeft.toString();
+
+        onUpdate();
     }
 
     function startTimer() {
@@ -29,10 +78,11 @@ function timedMath(conf) {
         timer = setInterval(
             function() {
                 state.timeLeft = totalTime - (Date.now() - startTime);
-
                 if(state.timeLeft <= 0) {
                     beDone();
                 }
+
+                update();
             }, 1000
         );
     }
@@ -44,14 +94,6 @@ function timedMath(conf) {
         conf.problemField.textContent = operands.join(' x ');
     }
 
-/*
-// XXX only start this when the user starts (on first input, say)
-// ALSO make it be periodic and update the timer
-    // stop after 15 minutes:
-    let time_is_up = false;
-    setTimeout(function() { state.timeLeft = true; }, state.timeLeft);
- */
-
     let answerField = conf.answerField;
     answerField.addEventListener(
         "keydown", event => {
@@ -62,17 +104,20 @@ function timedMath(conf) {
             if(event.keyCode === 13) { // return key
                 if(answerField.value == state.correctAnswer) {
                     state.numCorrect++;
+                    onRight();
                 } else {
                     state.numIncorrect++;
+                    onWrong();
                 }
                 answerField.value = '';
                 newProblem();
-                //stui.update();
+                update();
             }
         }
     );
 
     newProblem();
+    update();
 
     return state;
 };

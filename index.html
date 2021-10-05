@@ -11,20 +11,71 @@
         #answer {
             width: 4em;
         }
+
+        .status {
+            text-align: right;
+        }
+
+        @keyframes flash-green {
+            from {
+                background-color: lightgreen;
+                color: green;
+            }
+            to {
+            }
+        }
+        @keyframes flash-red {
+            from {
+                background-color: red;
+                color: red;
+            }
+            to {
+            }
+        }
+        .record {
+            font-size: 18px;
+            text-align: center;
+        }
+        .right {
+            animation-duration: 1s;
+            animation-name: flash-green;
+            color: lightgreen;
+        }
+        .wrong {
+            animation-duration: 1s;
+            animation-name: flash-red;
+            color: #DC143C;
+        }
+
+        .centered {
+            display:table;
+            margin: 0 auto;
+        }
+
     </style>
   </head>
   <body>
-    <div id="status">
-        <span>correct answers: </span><span data-shows="numCorrect"></span>
-        <span>incorrect answers: </span><span data-shows="numIncorrect"></span>
-        <span>time left: </span><span data-shows="timeLeft"></span>
+    <div class="status">
+      <!--
+      <span>correct answers: </span><span data-shows="highScore"></span>
+      <span>incorrect answers: </span><span data-shows="numIncorrect"></span>
+      -->
+      <div>
+        <span>high score: </span><span data-shows="highScore"></span>
+      </div>
+      <div>
+        <span>score: </span><span data-shows="numCorrect"></span>
+      </div>
+      <div>
+        <span data-shows="minutesLeft"></span>:<span data-shows="secondsLeft"></span>
+      </div>
     </div>
     <div id="field-de-mathular">
-      <span>
+      <span class="centered">
         <span id="problem"></span> = <input id="answer" type="number" autofocus>
       </span>
       <div>
-        <span id="hint"></span>
+        <span id="record" class="record"></span>
       </div>
     </div>
   </body>
@@ -32,13 +83,42 @@
   <script src="../mathulars/mathulars.js"></script>
   <script src="timed_math.js"></script>
   <script>
-    let gameState = timedMath({
+    function recordResult(cssClass, text) {
+        var record = document.createElement('div');
+        record.innerText = text
+        conf.recordField.insertBefore(record, conf.recordField.firstChild);
+        record.classList.add(cssClass);
+    }
+
+    var stui;
+    var inpField = document.getElementById("field-de-mathular");
+    var conf = {
         problemField: document.getElementById("problem"),
         answerField:  document.getElementById("answer"),
-        hintField:    document.getElementById("hint"),
-    });
+        recordField:  document.getElementById("record"),
+        onWrong: function() {
+            //new Audio(url).play(); // gar no good sounds
+            recordResult("wrong", conf.problemField.innerText);
+        },
+        onRight: function() {
+            recordResult(
+                "right",
+                conf.problemField.innerText + " = " + conf.answerField.value
+            );
+        },
+        onUpdate:     function() {
+            if(typeof(stui) !== 'undefined')
+                stui.update();
+        },
+        onDone:     function() {
+            // ideally, one would play a sound here
+            recordResult("yay", "Doneular!");
+        },
+    };
+    var gameState = timedMath(conf);
 
-    let stui = uiulator(gameState, document.getElementById("status"));
+    //stui = uiulator(gameState, document.getElementById("status"));
+    stui = uiulator(gameState, document.getElementsByClassName("status"));
 
   </script>
 </html>
