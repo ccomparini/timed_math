@@ -91,7 +91,15 @@ function timedMath(conf) {
 // XXX dependency on mathulars:
         let operands = mathulars.operands(2, 2, 12);
         state.correctAnswer = operands[0] * operands[1];
-        conf.problemField.textContent = operands.join(' x ');
+        // randomly do division or multiplication:
+        if(Math.random() < 0.5) {
+            conf.problemField.textContent = operands.join(' x ');
+        } else {
+            let tmp = operands[0];
+            operands[0] = state.correctAnswer;
+            state.correctAnswer = tmp;
+            conf.problemField.textContent = operands.join(' ÷ ');
+        }
     }
 
     let answerField = conf.answerField;
