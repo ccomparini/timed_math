@@ -110,16 +110,18 @@ function timedMath(conf) {
             }
 
             if(event.keyCode === 13) { // return key
-                if(answerField.value == state.correctAnswer) {
-                    state.numCorrect++;
-                    onRight();
-                } else {
-                    state.numIncorrect++;
-                    onWrong();
+                if(answerField.value) {
+                    if(answerField.value == state.correctAnswer) {
+                        state.numCorrect++;
+                        onRight();
+                    } else {
+                        state.numIncorrect++;
+                        onWrong();
+                    }
+                    answerField.value = '';
+                    newProblem();
+                    update();
                 }
-                answerField.value = '';
-                newProblem();
-                update();
             }
         }
     );
