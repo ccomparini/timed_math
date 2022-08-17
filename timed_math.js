@@ -111,15 +111,18 @@ function timedMath(conf) {
 
             if(event.keyCode === 13) { // return key
                 if(answerField.value) {
+                    let doNewProblem = true;
                     if(answerField.value == state.correctAnswer) {
                         state.numCorrect++;
                         onRight();
                     } else {
                         state.numIncorrect++;
                         onWrong();
+                        doNewProblem = false;
                     }
                     answerField.value = '';
-                    newProblem();
+                    if(doNewProblem)
+                        newProblem();
                     update();
                 }
             }

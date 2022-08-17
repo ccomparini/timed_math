@@ -123,14 +123,15 @@
         answerField:  document.getElementById("answer"),
         recordField:  document.getElementById("record"),
         onWrong: function() {
-            //new Audio(url).play(); // gar no good sounds
-            recordResult("wrong", conf.problemField.innerText);
+            //recordResult("wrong", conf.problemField.innerText);
+            new Audio("incorrect" + Math.floor(Math.random() * 4) + ".m4a").play();
         },
         onRight: function() {
             recordResult(
                 "right",
                 conf.problemField.innerText + " = " + conf.answerField.value
             );
+            new Audio("correct.mp3").play();
         },
         onUpdate:     function() {
             if(typeof(stui) !== 'undefined')
