@@ -143,7 +143,10 @@
             // ideally, one would play a sound here
             recordResult("yay", "Doneular!");
             if(gameState.numCorrect > gameState.highScore) {
-                recordResult("high-score", "HIGH SCORE! " + gameState.numCorrect);
+                recordResult("high-score",
+                    "HIGH SCORE! " + gameState.numCorrect +
+                    " correct in " + gameState.totalTime + " seconds!"
+                );
             } else if(gameState.numCorrect === gameState.highScore) {
                 recordResult("tied", "You tied the high score!");
             }
