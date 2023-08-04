@@ -13,7 +13,7 @@ function timedMath(conf) {
     let onRight  = conf.onRight  || function() { };
     let onWrong  = conf.onWrong  || function() { };
 
-    let totalTime = (conf.totalTime || 15*60); // units: seconds!
+    let totalTime = (conf.totalTime || 5*60); // units: seconds!
 
     function newState(lastState) {
         var highScores = { }; // keys are totalTime, values are states
