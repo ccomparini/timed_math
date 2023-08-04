@@ -14,6 +14,7 @@
 
         .status {
             text-align: right;
+            display: grid;
         }
 
         @keyframes flash-green {
@@ -82,19 +83,27 @@
   </head>
   <body>
     <div class="status">
+      <span style="grid-column: 1; text-align: left;">
+        <div>1 minute <a href="?totalTime=60">sprint</a></div>
+        <div>5 minute <a href="?totalTime=300">run</a></div>
+        <div>15 minute <a href="?totalTime=900">slog</a></div>
+      </span>
       <!--
       <span>correct answers: </span><span data-shows="highScore"></span>
       <span>incorrect answers: </span><span data-shows="numIncorrect"></span>
       -->
-      <div>
-        <span>high score: </span><span data-shows="highScore"></span>
-      </div>
-      <div>
-        <span>score: </span><span data-shows="numCorrect"></span>
-      </div>
-      <div>
-        <span data-shows="minutesLeft"></span>:<span data-shows="secondsLeft"></span>
-      </div>
+      <span style="grid-column: 2">
+        <div>
+          <span> time left:</span>
+          <span data-shows="minutesLeft"></span>:<span data-shows="secondsLeft"></span>
+        </div>
+        <div>
+          <span>high score: </span><span data-shows="highScore"></span>
+        </div>
+        <div>
+          <span>score: </span><span data-shows="numCorrect"></span>
+        </div>
+      </span>
     </div>
     <div id="field-de-mathular">
       <span class="centered">
