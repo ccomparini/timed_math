@@ -116,12 +116,14 @@
         record.classList.add(cssClass);
     }
 
+    let params = new URLSearchParams(document.location.search);
     var stui;
     var inpField = document.getElementById("field-de-mathular");
     var conf = {
         problemField: document.getElementById("problem"),
         answerField:  document.getElementById("answer"),
         recordField:  document.getElementById("record"),
+        totalTime: params.get("totalTime"),
         onWrong: function() {
             //recordResult("wrong", conf.problemField.innerText);
             new Audio("incorrect" + Math.floor(Math.random() * 4) + ".m4a").play();
