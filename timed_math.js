@@ -16,22 +16,34 @@ function timedMath(conf) {
     let totalTime = (conf.totalTime || 15*60) * 1000;
 
     function newState(lastState) {
+        var highScores = { }; // keys are totalTime, values are states
         var best = 0;
         if(lastState) {
-            if(lastState.highScore)
-                best = lastState.highScore;
-            if(lastState.numCorrect > best)
-                best = lastState.numCorrect;
+            if(lastState.highScores) {
+                highScores = lastState.highScores;
+                if(totalTime in highScores) {
+                    best = highScores[totalTime].numCorrect;
+                }
+            }
         }
 
         return {
+            totalTime    : totalTime,
             numCorrect   : 0,
             numIncorrect : 0,
 
-            highScore  : best,
-            timeLeft : totalTime,
+            highScore  : best,  // high score for selected total time
+            timeLeft   : totalTime,
+            highScores : highScores,
+        }
+    }
 
-            lastState : lastState,
+    function updateHighScores(state) {
+        let hs = state.highScores;
+
+        if(state.numCorrect > state.highScore) {
+            hs[totalTime] = Object.assign({}, state);
+            delete hs[totalTime].highScores;
         }
     }
 
@@ -58,6 +70,7 @@ function timedMath(conf) {
 
     function beDone() {
         state.timeLeft = 0;
+        updateHighScores(state);
         conf.onDone();
         clearInterval(timer);
         saveState();
