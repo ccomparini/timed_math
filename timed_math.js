@@ -13,7 +13,7 @@ function timedMath(conf) {
     let onRight  = conf.onRight  || function() { };
     let onWrong  = conf.onWrong  || function() { };
 
-    let totalTime = (conf.totalTime || 15*60) * 1000;
+    let totalTime = (conf.totalTime || 15*60); // units: seconds!
 
     function newState(lastState) {
         var highScores = { }; // keys are totalTime, values are states
@@ -90,7 +90,7 @@ function timedMath(conf) {
         clearInterval(timer);
         timer = setInterval(
             function() {
-                state.timeLeft = totalTime - (Date.now() - startTime);
+                state.timeLeft = totalTime*1000 - (Date.now() - startTime);
                 if(state.timeLeft <= 0) {
                     beDone();
                 }
@@ -126,10 +126,12 @@ function timedMath(conf) {
                 if(answerField.value) {
                     let doNewProblem = true;
                     if(answerField.value == state.correctAnswer) {
-                        state.numCorrect++;
+                        if(state.timeLeft > 0)
+                            state.numCorrect++;
                         onRight();
                     } else {
-                        state.numIncorrect++;
+                        if(state.timeLeft > 0)
+                            state.numIncorrect++;
                         onWrong();
                         doNewProblem = false;
                     }
