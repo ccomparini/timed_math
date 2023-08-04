@@ -77,8 +77,8 @@ function timedMath(conf) {
     }
 
     function update() {
-        state.minutesLeft = Math.floor(state.timeLeft/(60000));
-        state.secondsLeft = Math.floor((state.timeLeft%60000)/1000);
+        state.minutesLeft = Math.floor(state.timeLeft / 60);
+        state.secondsLeft = Math.floor(state.timeLeft % 60);
         if(state.secondsLeft < 10)
             state.secondsLeft = "0" + state.secondsLeft.toString();
 
@@ -90,7 +90,7 @@ function timedMath(conf) {
         clearInterval(timer);
         timer = setInterval(
             function() {
-                state.timeLeft = totalTime*1000 - (Date.now() - startTime);
+                state.timeLeft = (totalTime*1000 - (Date.now() - startTime))/1000;
                 if(state.timeLeft <= 0) {
                     beDone();
                 }
